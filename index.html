@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Little World</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav>
+  <a href="#home">Homepage</a>
+  <a href="#about">About Me</a>
+  <div class="dropdown">
+    <button class="dropbtn">Library ▾</button>
+    <div class="dropdown-content">
+      <a href="#library">All Books</a>
+      <a href="#add-book">Add a Book</a>
+    </div>
+  </div>
+
+  <div class="dropdown">
+    <button class="dropbtn">Reading List ▾</button>
+    <div class="dropdown-content">
+      <a href="#want-to-read">Want to Read</a>
+      <a href="#current-read">Current Read</a>
+      <a href="#already-read">Already Read</a>
+    </div>
+  </div>
+
+  <a href="#diary">Diary</a>
+  <a href="#album">Album</a>
+  <a href="#comments">Comments</a>
+</nav>
+
+<!-- HOMEPAGE -->
+<section id="home">
+  <div class="hero">
+    <h1>Welcome to my world!</h1>
+    <div class="tagline">Books, diary entries, and little things I love.</div>
+    <div id="clock" class="clock"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span id="stat-books">0</span><small>books</small></div>
+    <div class="stat"><span id="stat-diary">0</span><small>diary entries</small></div>
+    <div class="stat"><span id="stat-photos">0</span><small>photos</small></div>
+  </div>
+
+  <div class="home-cards">
+    <div class="home-card">
+      <h3>🎲 What should I read next?</h3>
+      <button class="home-btn" onclick="pickRandom()">Pick for me</button>
+      <div id="random-result" class="home-result"></div>
+    </div>
+
+    <div class="home-card">
+      <h3>📔 Latest diary entry</h3>
+      <div id="latest-entry" class="home-result">No entries yet.</div>
+    </div>
+
+    <div class="home-card">
+      <h3>💖 Currently obsessed with</h3>
+      <div class="home-result">Change this text to whatever you're into right now!</div>
+    </div>
+  </div>
+
+  <h2>My Favourite Picture</h2>
+  <img src="dokja.png" alt="my cutie dokja" width="200" height="200">
+  <div><a href="https://youtu.be/JnSqh9VJ0Yc?si=OkAbyh5D4SWP-F1K">21st Century Romance</a></div>
+</section>
+
+<!-- ABOUT ME -->
+<section id="about">
+  <h1>About Me</h1>
+  <div class="about-box">
+    <img src="profile1.jpeg" alt="Picture of me" width="250" height="250">
+    <div>
+      <p>Hi! My name is <strong>Hanaegyu</strong>.</p>
+      <p>I love reading manga, webtoons, and novels.</p>
+      <h3>Favourite things</h3>
+      <ul>
+        <li>Favourite genre: Fantasy</li>
+        <li>Favourite book: Book Title</li>
+        <li>Currently learning: HTML and CSS</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- LIBRARY (all books) -->
+<section id="library">
+  <h1>📚 Library</h1>
+  <p id="lib-intro" class="lib-intro"></p>
+
+  <div class="lib-controls">
+    <input type="search" id="lib-search" placeholder="Search by title or author...">
+    <select id="lib-genre"><option value="">All genres</option></select>
+    <select id="lib-format"><option value="">All formats</option></select>
+    <select id="lib-sort">
+      <option value="recent">Recently added first</option>
+      <option value="az">A to Z</option>
+      <option value="za">Z to A</option>
+    </select>
+  </div>
+
+  <div id="lib-count" class="lib-count"></div>
+  <div id="lib-list" class="lib-list"></div>
+  <button id="lib-more" class="home-btn lib-more" onclick="libMore()">Show more</button>
+</section>
+
+<!-- ADD A BOOK -->
+<section id="add-book">
+  <h1>Add a Book</h1>
+
+  <div class="comment-form">
+    <input type="text" id="book-title" placeholder="Book title">
+    <input type="text" id="book-author" placeholder="Author (optional)">
+
+    <input type="text" id="book-country" list="country-options" placeholder="Country (optional)">
+    <datalist id="country-options">
+      <option value="Japan">
+      <option value="South Korea">
+      <option value="China">
+      <option value="Taiwan">
+      <option value="Thailand">
+      <option value="United States">
+      <option value="Malaysia">
+      <option value="Indonesia">
+    </datalist>
+
+    <select id="book-format">
+      <option value="">Format (optional)</option>
+      <option>Manga</option>
+      <option>Manhwa</option>
+      <option>Manhua</option>
+      <option>Webtoon</option>
+      <option>Novel</option>
+      <option>Light Novel</option>
+      <option>Doujinshi</option>
+      <option>Other</option>
+    </select>
+
+    <input type="number" id="book-year" min="1900" max="2100" placeholder="Release year (optional)">
+    <input type="text" id="book-genres" placeholder="Genres / tags, separated by commas (optional)">
+
+    <select id="book-list">
+      <option value="want-grid">Want to Read</option>
+      <option value="current-grid">Current Read</option>
+      <option value="already-grid">Already Read</option>
+    </select>
+
+    <div class="rating-input">
+      <span>My rating:</span>
+      <div class="star-picker" id="star-picker">
+        <button type="button" data-v="1" aria-label="1 star">★</button>
+        <button type="button" data-v="2" aria-label="2 stars">★</button>
+        <button type="button" data-v="3" aria-label="3 stars">★</button>
+        <button type="button" data-v="4" aria-label="4 stars">★</button>
+        <button type="button" data-v="5" aria-label="5 stars">★</button>
+      </div>
+      <small>click the same star again to clear</small>
+    </div>
+
+    <label>Cover (optional):
+      <input type="file" id="book-cover" accept="image/*">
+    </label>
+
+    <button onclick="addBook()">Add Book</button>
+    <div id="book-msg" class="form-msg"></div>
+  </div>
+</section>
+
+<!-- WANT TO READ -->
+<section id="want-to-read">
+  <h1>Want to Read</h1>
+  <div class="book-grid" id="want-grid">
+    <div class="book">
+      <img src="covers/book1.png" alt="Cover of Book 1">
+      <h3>Book Title 1</h3>
+      <p class="author">Author Name</p>
+    </div>
+  </div>
+</section>
+
+<!-- CURRENT READ -->
+<section id="current-read">
+  <h1>Current Read</h1>
+  <div class="book-grid" id="current-grid">
+    <div class="book">
+      <img src="covers/book2.png" alt="Cover of Book 2">
+      <h3>Book Title 2</h3>
+      <p class="author">Author Name</p>
+      <p>Chapter 12 of 40</p>
+    </div>
+  </div>
+</section>
+
+<!-- ALREADY READ -->
+<section id="already-read">
+  <h1>Already Read</h1>
+  <p id="already-intro" class="lib-intro"></p>
+  <div class="book-grid" id="already-grid"></div>
+  <p><a class="see-all" href="#library">See all in the Library</a></p>
+</section>
+
+<!-- DIGITAL DIARY -->
+<section id="diary">
+  <h1>My Diary</h1>
+
+  <div class="comment-form" id="diary-form">
+    <input type="text" id="diary-title" placeholder="Title (optional)">
+    <select id="diary-mood">
+      <option value="">Mood (optional)</option>
+      <option value="😊 Happy">😊 Happy</option>
+      <option value="😌 Calm">😌 Calm</option>
+      <option value="😴 Tired">😴 Tired</option>
+      <option value="😢 Sad">😢 Sad</option>
+      <option value="😡 Angry">😡 Angry</option>
+      <option value="🥰 In love">🥰 In love</option>
+    </select>
+    <textarea id="diary-text" placeholder="Dear diary..."></textarea>
+    <button onclick="addEntry()">Save Entry</button>
+  </div>
+
+  <div id="diary-list"></div>
+</section>
+
+<!-- PHOTO ALBUM -->
+<section id="album">
+  <h1>My Album</h1>
+
+  <div class="comment-form">
+    <input type="text" id="photo-caption" placeholder="Caption (optional)">
+    <select id="photo-album">
+      <option value="collection">My Collection</option>
+      <option value="pictures">My Pictures</option>
+    </select>
+    <label>Photos:
+      <input type="file" id="photo-files" accept="image/*" multiple>
+    </label>
+    <button onclick="addPhotos()">Add Photos</button>
+  </div>
+
+  <div class="filter-bar">
+    <button onclick="showAlbum('all')">All</button>
+    <button onclick="showAlbum('collection')">My Collection</button>
+    <button onclick="showAlbum('pictures')">My Pictures</button>
+  </div>
+
+  <div class="photo-grid" id="photo-grid"></div>
+</section>
+
+<!-- COMMENTS -->
+<section id="comments">
+  <h1>Comments</h1>
+
+  <div class="comment-form">
+    <input type="text" id="name" placeholder="Your name">
+    <textarea id="message" placeholder="Write a comment..."></textarea>
+    <button onclick="addComment()">Post</button>
+  </div>
+
+  <div id="comment-list"></div>
+</section>
+
+<script src="books-data.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
