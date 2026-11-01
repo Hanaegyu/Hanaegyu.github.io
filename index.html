@@ -4,34 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Little World</title>
+    <script>
+      try {
+        var c = JSON.parse(localStorage.getItem("cozy") || "{}");
+        if (c.theme === "lavender" || c.theme === "dark") {
+          document.documentElement.setAttribute("data-theme", c.theme);
+        }
+      } catch (e) {}
+    </script>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <nav>
-  <a href="#home">Homepage</a>
-  <a href="#about">About Me</a>
-  <div class="dropdown">
-    <button class="dropbtn">Library ▾</button>
-    <div class="dropdown-content">
-      <a href="#library">All Books</a>
-      <a href="#add-book">Add a Book</a>
+  <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-links">☰ Menu</button>
+  <div class="nav-backdrop" id="nav-backdrop"></div>
+
+  <div class="nav-links" id="nav-links">
+    <div class="drawer-head">
+      <img class="drawer-avatar" src="profile1.jpeg" alt="" onerror="this.style.display='none'">
+      <div class="drawer-name">Hanaegyu</div>
+      <button class="drawer-close" id="drawer-close" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="nav-group">
+      <div class="drawer-label">Me</div>
+      <a href="#home">Homepage</a>
+      <a href="#about">About Me</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="drawer-label">Books</div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Library <span class="chev">▾</span></button>
+        <div class="dropdown-content">
+          <a href="#library">All Books</a>
+          <a href="#add-book">Add a Book</a>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Reading List <span class="chev">▾</span></button>
+        <div class="dropdown-content">
+          <a href="#want-to-read">Want to Read</a>
+          <a href="#current-read">Current Read</a>
+          <a href="#already-read">Already Read</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="drawer-label">Fun</div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Gallery <span class="chev">▾</span></button>
+        <div class="dropdown-content">
+          <a href="#gallery">Songs</a>
+          <a href="#album">Album</a>
+          <a href="#diary">Diary</a>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="dropbtn">Play <span class="chev">▾</span></button>
+        <div class="dropdown-content">
+          <a href="#garden">My Garden</a>
+        </div>
+      </div>
+
+      <a href="#comments">Comments</a>
     </div>
   </div>
-
-  <div class="dropdown">
-    <button class="dropbtn">Reading List ▾</button>
-    <div class="dropdown-content">
-      <a href="#want-to-read">Want to Read</a>
-      <a href="#current-read">Current Read</a>
-      <a href="#already-read">Already Read</a>
-    </div>
-  </div>
-
-  <a href="#diary">Diary</a>
-  <a href="#album">Album</a>
-  <a href="#comments">Comments</a>
 </nav>
 
 <!-- HOMEPAGE -->
@@ -50,8 +95,9 @@
 
   <div class="home-cards">
     <div class="home-card">
-      <h3>🎲 What should I read next?</h3>
-      <button class="home-btn" onclick="pickRandom()">Pick for me</button>
+      <h3>🍀 Lucky pick</h3>
+      <div>Draw a random book from your Library.</div>
+      <button class="home-btn" id="lucky-btn" onclick="luckyPick()">Draw a lot</button>
       <div id="random-result" class="home-result"></div>
     </div>
 
@@ -63,6 +109,12 @@
     <div class="home-card">
       <h3>💖 Currently obsessed with</h3>
       <div class="home-result">Change this text to whatever you're into right now!</div>
+    </div>
+
+    <div class="home-card">
+      <h3>🌱 My garden</h3>
+      <div id="home-garden" class="home-result"></div>
+      <a class="see-all small-link" href="#garden">Visit</a>
     </div>
   </div>
 
@@ -166,35 +218,30 @@
     <label>Cover (optional):
       <input type="file" id="book-cover" accept="image/*">
     </label>
+    <input type="url" id="book-cover-url" placeholder="Or paste a cover image link (optional)">
 
     <button onclick="addBook()">Add Book</button>
     <div id="book-msg" class="form-msg"></div>
   </div>
+
 </section>
 
 <!-- WANT TO READ -->
 <section id="want-to-read">
   <h1>Want to Read</h1>
-  <div class="book-grid" id="want-grid">
-    <div class="book">
-      <img src="covers/book1.png" alt="Cover of Book 1">
-      <h3>Book Title 1</h3>
-      <p class="author">Author Name</p>
-    </div>
-  </div>
+  <p id="want-intro" class="lib-intro"></p>
+  <div class="book-grid" id="want-grid"></div>
+  <button class="home-btn shelf-more" id="want-more" onclick="shelfMore('want-grid')">Show more</button>
+  <p class="shelf-links"><a class="see-all" href="#library">See all in the Library</a></p>
 </section>
 
 <!-- CURRENT READ -->
 <section id="current-read">
   <h1>Current Read</h1>
-  <div class="book-grid" id="current-grid">
-    <div class="book">
-      <img src="covers/book2.png" alt="Cover of Book 2">
-      <h3>Book Title 2</h3>
-      <p class="author">Author Name</p>
-      <p>Chapter 12 of 40</p>
-    </div>
-  </div>
+  <p id="current-intro" class="lib-intro"></p>
+  <div class="book-grid" id="current-grid"></div>
+  <button class="home-btn shelf-more" id="current-more" onclick="shelfMore('current-grid')">Show more</button>
+  <p class="shelf-links"><a class="see-all" href="#library">See all in the Library</a></p>
 </section>
 
 <!-- ALREADY READ -->
@@ -202,29 +249,40 @@
   <h1>Already Read</h1>
   <p id="already-intro" class="lib-intro"></p>
   <div class="book-grid" id="already-grid"></div>
-  <p><a class="see-all" href="#library">See all in the Library</a></p>
+  <button class="home-btn shelf-more" id="already-more" onclick="shelfMore('already-grid')">Show more</button>
+  <p class="shelf-links"><a class="see-all" href="#library">See all in the Library</a></p>
 </section>
 
-<!-- DIGITAL DIARY -->
-<section id="diary">
-  <h1>My Diary</h1>
+<!-- GALLERY (songs and YouTube links) -->
+<section id="gallery">
+  <h1>🎶 Songs</h1>
+  <p class="lib-intro">Songs and videos I love. Each card opens the song on YouTube.</p>
 
-  <div class="comment-form" id="diary-form">
-    <input type="text" id="diary-title" placeholder="Title (optional)">
-    <select id="diary-mood">
-      <option value="">Mood (optional)</option>
-      <option value="😊 Happy">😊 Happy</option>
-      <option value="😌 Calm">😌 Calm</option>
-      <option value="😴 Tired">😴 Tired</option>
-      <option value="😢 Sad">😢 Sad</option>
-      <option value="😡 Angry">😡 Angry</option>
-      <option value="🥰 In love">🥰 In love</option>
-    </select>
-    <textarea id="diary-text" placeholder="Dear diary..."></textarea>
-    <button onclick="addEntry()">Save Entry</button>
+  <div class="filter-bar">
+    <button class="gal-tab active" data-view="all">All Songs</button>
+    <button class="gal-tab" data-view="artist">By Artist</button>
+    <button class="gal-tab" data-view="playlist">Playlists</button>
   </div>
 
-  <div id="diary-list"></div>
+  <div class="lib-controls">
+    <input type="search" id="gal-search" placeholder="Search songs, artists or playlists...">
+    <label class="cover-switch"><input type="checkbox" id="gal-covers" checked> Show covers</label>
+  </div>
+
+  <div id="gal-count" class="lib-count"></div>
+  <div id="gal-content"></div>
+
+  <h2>Add a Song</h2>
+  <div class="comment-form">
+    <input type="text" id="song-title" placeholder="Song title">
+    <input type="text" id="song-artist" placeholder="Artist (optional)">
+    <input type="text" id="song-link" placeholder="YouTube link (optional)">
+    <input type="text" id="song-playlist" list="playlist-options" placeholder="Playlist (optional)">
+    <datalist id="playlist-options"></datalist>
+    <button onclick="addSong()">Add Song</button>
+    <div id="song-msg" class="form-msg"></div>
+  </div>
+
 </section>
 
 <!-- PHOTO ALBUM -->
@@ -252,6 +310,107 @@
   <div class="photo-grid" id="photo-grid"></div>
 </section>
 
+<!-- DIGITAL DIARY -->
+<section id="diary">
+  <h1>My Diary</h1>
+
+  <div class="comment-form" id="diary-form">
+    <input type="text" id="diary-title" placeholder="Title (optional)">
+    <select id="diary-mood">
+      <option value="">Mood (optional)</option>
+      <option value="😊 Happy">😊 Happy</option>
+      <option value="😌 Calm">😌 Calm</option>
+      <option value="😴 Tired">😴 Tired</option>
+      <option value="😢 Sad">😢 Sad</option>
+      <option value="😡 Angry">😡 Angry</option>
+      <option value="🥰 In love">🥰 In love</option>
+    </select>
+    <textarea id="diary-text" placeholder="Dear diary..."></textarea>
+    <button onclick="addEntry()">Save Entry</button>
+  </div>
+
+  <div id="diary-list"></div>
+</section>
+
+<!-- MY GARDEN (a plant and a pet) -->
+<section id="garden">
+  <h1>🌱 My Garden</h1>
+  <p class="lib-intro">Your plant grows when you read. Your pet grows when you write and collect things. Come back every day!</p>
+
+  <div id="garden-setup" class="garden-card">
+    <h3>Start your garden</h3>
+    <div class="comment-form">
+      <input type="text" id="g-pet-name" maxlength="20" placeholder="Name your pet (like Mochi)">
+      <input type="text" id="g-plant-name" maxlength="20" placeholder="Name your plant (like Sprout)">
+      <div class="g-colors" id="g-colors">
+        <span>Pet colour:</span>
+        <button type="button" class="swatch active" data-hue="330" style="background: hsl(330 85% 83%)" aria-label="Pink"></button>
+        <button type="button" class="swatch" data-hue="150" style="background: hsl(150 85% 83%)" aria-label="Mint"></button>
+        <button type="button" class="swatch" data-hue="28" style="background: hsl(28 90% 83%)" aria-label="Peach"></button>
+        <button type="button" class="swatch" data-hue="265" style="background: hsl(265 85% 85%)" aria-label="Lilac"></button>
+      </div>
+      <button onclick="startGarden()">🌱 Start growing</button>
+    </div>
+  </div>
+
+  <div id="garden-main" hidden>
+    <div class="garden-scene">
+      <span class="g-cloud c1"></span>
+      <span class="g-cloud c2"></span>
+      <div class="g-slot g-left" id="g-plant-art"></div>
+      <div class="g-slot g-right" id="g-pet-art"></div>
+    </div>
+    <div id="garden-msg" class="form-msg garden-msg"></div>
+
+    <div class="garden-panels">
+      <div class="garden-card">
+        <h3>🌱 <span id="g-plant-title"></span></h3>
+        <div id="g-plant-stage" class="g-stage"></div>
+        <div class="g-bar"><div id="g-plant-bar" class="g-bar-fill"></div></div>
+        <div id="g-plant-next" class="g-next"></div>
+        <button class="home-btn" id="g-water" onclick="gardenCare('plant')">💧 Water</button>
+        <button class="mini-btn" onclick="renameGarden('plant')">Rename</button>
+      </div>
+
+      <div class="garden-card">
+        <h3>🐾 <span id="g-pet-title"></span></h3>
+        <div id="g-pet-stage" class="g-stage"></div>
+        <div class="g-bar"><div id="g-pet-bar" class="g-bar-fill"></div></div>
+        <div id="g-pet-next" class="g-next"></div>
+        <button class="home-btn" id="g-pet" onclick="gardenCare('pet')">🤗 Pet</button>
+        <button class="mini-btn" onclick="renameGarden('pet')">Rename</button>
+      </div>
+    </div>
+
+    <div class="garden-card">
+      <h3>🔥 Streak: <span id="g-streak">0</span> days</h3>
+      <div class="g-next">Water or pet each day to keep it going. Missing a day is okay. Nothing ever gets sick, your pet just gets sleepy.</div>
+    </div>
+
+    <div class="garden-card">
+      <h3>🎀 Dress-up</h3>
+      <div id="g-acc" class="g-acc"></div>
+    </div>
+
+    <div class="garden-card">
+      <h3>How it grows</h3>
+      <ul class="g-how">
+        <li>🌱 Plant: a book in Already Read +10, Current Read +3, Want to Read +1</li>
+        <li>🐾 Pet: a diary entry +8, a photo +4, a song +3</li>
+        <li>💧🤗 Water or pet once a day: +5 each</li>
+        <li>🔥 Streak of 3, 7, 14 and 30 days: +10 for both</li>
+        <li>Only new things count. Your old books don't.</li>
+      </ul>
+    </div>
+
+    <details class="garden-card g-reset">
+      <summary>Start over</summary>
+      <div class="g-next">This forgets growth, streak and names. Your books, diary, photos and songs stay safe.</div>
+      <button class="delete-btn" onclick="resetGarden()">Start over</button>
+    </details>
+  </div>
+</section>
+
 <!-- COMMENTS -->
 <section id="comments">
   <h1>Comments</h1>
@@ -265,7 +424,78 @@
   <div id="comment-list"></div>
 </section>
 
+<!-- MY TOOLS (closed until you open it) -->
+<details class="tools" id="tools">
+  <summary>⚙️ My tools</summary>
+
+  <h3>Backup and restore</h3>
+  <div class="comment-form">
+    <button onclick="downloadBackup()">⬇ Download backup</button>
+    <label>Restore from a backup:
+      <input type="file" id="restore-file" accept=".json,application/json" onchange="restoreBackup(this)">
+    </label>
+    <div id="backup-info" class="form-msg"></div>
+    <div id="backup-msg" class="form-msg"></div>
+  </div>
+
+  <h3>Covers</h3>
+  <div class="comment-form">
+    <small>Looks up covers for your books one at a time (about 90 a minute, so the whole list takes around half an hour). Keep this tab open. It remembers where it stopped.</small>
+    <button id="cover-start" onclick="findCovers()">🔎 Find covers</button>
+    <button id="cover-stop" onclick="stopCovers()" hidden>⏹ Stop</button>
+    <button onclick="downloadCoversFile()">⬇ Download covers-data.js</button>
+    <div id="cover-progress" class="form-msg"></div>
+    <div id="cover-msg" class="form-msg"></div>
+  </div>
+
+  <h3>Move my songs into songs-data.js</h3>
+  <div class="comment-form">
+    <button onclick="copySongLines()">Copy song lines</button>
+    <textarea id="song-lines" readonly placeholder="Songs you added with the form will show up here."></textarea>
+    <div id="copy-msg" class="form-msg"></div>
+  </div>
+
+  <h3>Move my books into books-data.js</h3>
+  <div class="comment-form">
+    <button onclick="copyBookLines()">Copy book lines</button>
+    <textarea id="book-lines" readonly placeholder="Books you added with the form will show up here."></textarea>
+    <div id="book-copy-msg" class="form-msg"></div>
+  </div>
+</details>
+
+<!-- COZY SETTINGS (theme, floating hearts and sparkles, cursor) -->
+<div id="fx-layer" aria-hidden="true"></div>
+<button id="cozy-btn" class="cozy-btn" aria-label="Appearance settings" aria-expanded="false" aria-controls="cozy-panel">🎨</button>
+<div id="cozy-panel" class="cozy-panel" hidden>
+  <div class="cozy-title">Make it cozy</div>
+  <div class="cozy-row">
+    <span>Theme</span>
+    <div class="cozy-opts" data-group="theme">
+      <button data-value="pink">🌸 Pink</button>
+      <button data-value="lavender">💜 Lavender</button>
+      <button data-value="dark">🌙 Dark</button>
+    </div>
+  </div>
+  <div class="cozy-row">
+    <span>Magic</span>
+    <div class="cozy-opts" data-group="effect">
+      <button data-value="hearts">💗 Hearts</button>
+      <button data-value="sparkles">✨ Sparkles</button>
+      <button data-value="none">Off</button>
+    </div>
+  </div>
+  <div class="cozy-row">
+    <span>Cursor</span>
+    <div class="cozy-opts" data-group="cursor">
+      <button data-value="on">💗 Heart</button>
+      <button data-value="off">Normal</button>
+    </div>
+  </div>
+</div>
+
 <script src="books-data.js"></script>
+<script src="songs-data.js"></script>
+<script src="covers-data.js"></script>
 <script src="script.js"></script>
 
 </body>
